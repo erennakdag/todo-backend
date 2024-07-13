@@ -1,8 +1,8 @@
-package com.erenn.todoapp.User.DTOs;
+package com.erenn.todoapp.DTOs;
 
 import jakarta.validation.constraints.NotNull;
 
-public record UserUpdatePasswordDTO(
+public record UserUpdatePasswordRequest(
         @NotNull String password
 ) {
 }

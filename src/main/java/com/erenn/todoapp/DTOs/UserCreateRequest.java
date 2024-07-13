@@ -1,8 +1,8 @@
-package com.erenn.todoapp.User.DTOs;
+package com.erenn.todoapp.DTOs;
 
 import jakarta.validation.constraints.NotNull;
 
-public record UserCreateDTO(
+public record UserCreateRequest(
         @NotNull String username,
         @NotNull String email,
         @NotNull String password

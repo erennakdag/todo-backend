@@ -1,9 +1,13 @@
-package com.erenn.todoapp.User;
+package com.erenn.todoapp.services;
 
-import com.erenn.todoapp.User.DTOs.UserCreateDTO;
+import com.erenn.todoapp.DTOs.UserCreateRequest;
+import com.erenn.todoapp.entities.User;
+import com.erenn.todoapp.repos.UserRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
+
+import java.util.UUID;
 
 @Service
 public class UserService {
@@ -13,7 +17,7 @@ public class UserService {
         this.repository = repository;
     }
 
-    public User getUserById(Long id) throws ResponseStatusException{
+    public User getUserById(UUID id) throws ResponseStatusException{
         return this.repository.findById(id).orElseThrow(() -> new ResponseStatusException((HttpStatus.NOT_FOUND)));
     }
 
@@ -21,7 +25,7 @@ public class UserService {
         return this.repository.findByUsernameOrEmail(usernameOrEmail, usernameOrEmail).orElseThrow(() -> new ResponseStatusException((HttpStatus.NOT_FOUND)));
     }
 
-    public User createUser(UserCreateDTO userCreateData) throws ResponseStatusException {
+    public User createUser(UserCreateRequest userCreateData) throws ResponseStatusException {
         if (this.repository.findByUsernameOrEmail(userCreateData.username(), userCreateData.email()).isEmpty()) {
             User user = new User(userCreateData.username(), userCreateData.email(), userCreateData.password());
             this.repository.save(user);
@@ -30,15 +34,7 @@ public class UserService {
         throw new ResponseStatusException(HttpStatus.CONFLICT);
     }
 
-    public User updateUsername(Long id, String username) throws ResponseStatusException {
-        if (this.repository.findByUsername(username).isEmpty()) {
-            this.repository.updateUsernameByID(id, username);
-            return this.repository.findById(id).orElseThrow(() -> new ResponseStatusException((HttpStatus.NOT_FOUND)));
-        }
-        throw new ResponseStatusException(HttpStatus.CONFLICT);
-    }
-
-    public User updatePassword(Long id, String newPassword) throws ResponseStatusException {
+    public User updatePassword(UUID id, String newPassword) throws ResponseStatusException {
         User user = this.repository.findById(id).orElseThrow(() -> new ResponseStatusException((HttpStatus.NOT_FOUND)));
         if (user.getPassword().equals(newPassword)) {
             throw new ResponseStatusException(HttpStatus.CONFLICT);
@@ -48,7 +44,7 @@ public class UserService {
         return user;
     }
 
-    public void deleteUserById(Long id) {
+    public void deleteUserById(UUID id) {
         this.repository.deleteById(id);
     }
 

@@ -1,12 +1,15 @@
-package com.erenn.todoapp.User;
+package com.erenn.todoapp.controllers;
 
-import com.erenn.todoapp.User.DTOs.UserCreateDTO;
-import com.erenn.todoapp.User.DTOs.UserUpdatePasswordDTO;
-import com.erenn.todoapp.User.DTOs.UserUpdateUsernameDTO;
+import com.erenn.todoapp.DTOs.UserCreateRequest;
+import com.erenn.todoapp.DTOs.UserUpdatePasswordRequest;
+import com.erenn.todoapp.services.UserService;
+import com.erenn.todoapp.entities.User;
 import jakarta.validation.Valid;
 import org.springframework.data.repository.query.Param;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
+
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/users")
@@ -24,7 +27,7 @@ public class UserController {
     }
 
     @GetMapping("/:id")
-    public User getUserById(@Param("id") Long id) throws ResponseStatusException {
+    public User getUserById(@Param("id") UUID id) throws ResponseStatusException {
         return this.service.getUserById(id);
     }
 
@@ -34,22 +37,17 @@ public class UserController {
     }
 
     @PostMapping("/")
-    public User createUser(@Valid @RequestBody UserCreateDTO userCreateDTO) throws ResponseStatusException {
-        return this.service.createUser(userCreateDTO);
-    }
-
-    @PutMapping("/{id}/update-username")
-    public User updateUsername(@PathVariable Long id, @Valid @RequestBody UserUpdateUsernameDTO userUpdateUsernameDTO) {
-        return this.service.updateUsername(id, userUpdateUsernameDTO.username());
+    public User createUser(@Valid @RequestBody UserCreateRequest userCreateRequest) throws ResponseStatusException {
+        return this.service.createUser(userCreateRequest);
     }
 
     @PutMapping("/{id}/update-password")
-    public User updatePassword(@PathVariable Long id, @Valid @RequestBody UserUpdatePasswordDTO userUpdatePasswordDTO) {
-        return this.service.updatePassword(id, userUpdatePasswordDTO.password());
+    public User updatePassword(@PathVariable UUID id, @Valid @RequestBody UserUpdatePasswordRequest userUpdatePasswordRequest) {
+        return this.service.updatePassword(id, userUpdatePasswordRequest.password());
     }
 
     @DeleteMapping("/{id}")
-    public void deleteUserById(@PathVariable Long id) {
+    public void deleteUserById(@PathVariable UUID id) {
         this.service.deleteUserById(id);
     }
 
